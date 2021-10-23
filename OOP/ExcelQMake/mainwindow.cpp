@@ -3,30 +3,24 @@
 #include<iostream>
 #include<QDebug>
 #include <QTextStream>
+#include<QMessageBox>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
 
-  ui->setupUi(this);
+    ui->setupUi(this);
+
     int rowCount = 4;
     int columnCount = 4;
+
     ui->tableWidget->setRowCount(4);
-
     ui->tableWidget->setColumnCount(4);
-    for(int i = 0; i < columnCount; ++i) ui->tableWidget->setColumnWidth(i, 115);
 
+    for(int i = 0; i < columnCount; ++i) ui->tableWidget->setColumnWidth(i, 115);
     for(int i = 0; i < rowCount; ++i)  ui->tableWidget->setRowHeight(i, 50);
 
-    for(int i = 0; i < rowCount; ++i) {
-        for(int j = 0; j < columnCount; ++j) {
-            ui->tableWidget->setItem(i,j, ui->QTableWidgetItem("(%d, %d)" % (i, j)));
-        }
-    }
 
-    QModelIndex currentIndex = ui->tableWidget-;
-
-   // QString a = ui->tableWidget->item(currentIndex.row(), 0)->text();
 }
 
 MainWindow::~MainWindow()
@@ -34,10 +28,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+int MainWindow::calculateExpression(const QString& cellText) {
+    return 5;
+}
+
+
 void MainWindow::on_pushButton_2_clicked()
 {
-    std::string cellCoordinate = data.back();
-
+    QTableWidgetItem * item= ui->tableWidget->currentItem();
+    item->setText(QString::number(calculateExpression(item->text())));
 }
 
 
