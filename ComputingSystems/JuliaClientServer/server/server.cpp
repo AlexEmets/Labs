@@ -45,7 +45,7 @@ std::vector<std::string> cStringToSTDString(const char* protocolRequest, int siz
 
 void addToLog(char* line) {
     std::ofstream fileOut;
-    const std::string fileName = "/home/oyemets/University/Labs/ComputingSystems/ClientServer/server/ConnectionsLog.txt";
+    const std::string fileName = "/home/oyemets/University/Labs/ComputingSystems/JuliaClientServer/server/ConnectionsLog.txt";
     fileOut.open(fileName, std::ios::app);
     fileOut << '\n' << line;
 }
@@ -103,10 +103,17 @@ int mainServerFunc(int argc, char* argv[],int port) {
         char bufferProtocol[1024] = {0};
         read(clientSocket, bufferProtocol, 4096);
 
-       // addToLog(bufferProtocol);
         std::cout << bufferProtocol << '\n';
         //header for keeping info
-        if(bufferProtocol[0] == 'K') {
+        addToLog(bufferProtocol);
+        if((std::string)bufferProtocol == "finish") {
+            return 0;
+        }
+        if((std::string)bufferProtocol == "Who") {
+            std::string answerToClient = "Author: Julia Rak\nVariant 7:)";
+            send(clientSocket, answerToClient.c_str(), answerToClient.length() + 1, 0);
+        }
+        else if(bufferProtocol[0] == 'K') {
             //receivedObjectaName = {K, Name, type, value}
             std::cout << "in K\n";
             std::vector<std::string> receivedObject = cStringToSTDString(bufferProtocol, strlen(bufferProtocol));
@@ -117,6 +124,9 @@ int mainServerFunc(int argc, char* argv[],int port) {
 
             Object object = {objectName, objectType, std::atoi(objectValue.c_str())};
             serverStorage.push_back(std::move(object));
+
+            std::cout << "Server storage updated:\n";
+            for(const auto& it: serverStorage) std::cout << it << "\n\n";
         }
 
         else if(bufferProtocol[0] == 'G') {
@@ -137,8 +147,6 @@ int mainServerFunc(int argc, char* argv[],int port) {
         }
 
         //write edited text to file
-        std::cout << "Server storage updated:\n";
-        for(const auto& it: serverStorage) std::cout << it << "\n\n";
     }
 
 

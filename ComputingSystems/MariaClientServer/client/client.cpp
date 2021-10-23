@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <chrono>
 
 int mainClientFunc(int argc, char* argv[],int port) {
 
@@ -45,7 +46,7 @@ int mainClientFunc(int argc, char* argv[],int port) {
         //read result strings from server storage
         read(sock, textFromServer, 1024);
         std::cout << textFromServer << '\n';
-        if((std::string)textFromServer != "Try again:(") {
+        if(textFromServer[0] == 'Y') {
             break;
         }
     }

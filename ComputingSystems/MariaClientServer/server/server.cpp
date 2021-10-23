@@ -12,8 +12,7 @@
 #include <algorithm>
 
 //Info for "Who" command
-const char authorName[] = "Maria Kardash";
-const char projectInfo[] = "Variant: 1\n Guess the passport";
+const char projectInfo[] = "Author: Maria Kardash\nVariant: 12\n";
 
 
 std::string generateRandomPassword() {
@@ -99,7 +98,12 @@ int startServer(int argc, char* argv[],int port) {
             std::string passwordFromCLient(buffer);
 
             std::string answerToClient;
-            if (passwordFromCLient == generatedPassword) {
+
+            if(passwordFromCLient == "Who") {
+                answerToClient = projectInfo;
+                send(clientSocket, answerToClient.c_str(), answerToClient.length() + 1, 0);
+            }
+            else if (passwordFromCLient == generatedPassword) {
                 answerToClient = "You right! Correct password is " + passwordFromCLient;
                 send(clientSocket, answerToClient.c_str(), answerToClient.length() + 1, 0);
                 break;

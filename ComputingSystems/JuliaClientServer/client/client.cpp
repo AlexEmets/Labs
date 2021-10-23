@@ -67,7 +67,7 @@ int mainClientFunc(int argc, char* argv[],int port) {
         send(sock, ProtocolRequest.c_str(), ProtocolRequest.length() + 1, 0);
 
         char buffer[1024];
-        if(ProtocolRequest[0] == 'G') {
+        if(ProtocolRequest[0] == 'G' || ProtocolRequest == "Who") {
             read(sock, buffer, 1024);
             std::cout << "\nReceived from server: \n" << buffer << '\n';
         }
