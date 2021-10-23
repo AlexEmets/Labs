@@ -6,36 +6,18 @@
 #include <cctype>
 
 using namespace std;
-int addition(int a, int b) {
-    return a + b;
-}
 
-int subtraction(int a, int b) {
-    return a + b;
-}
+double RPNtoNumber(std::string expression) {
+    map<char, function<double(const double&, const double&)>> operations;
 
-int multiplication(int a, int b) {
-    return a + b;
-}
+    operations['+'] = [](double a, double b){return a+b;};
+    operations['-'] = [](double a, double b){return a-b;};
+    operations['*'] = [](double a, double b){return a*b;};
+    operations['/'] = [](double a, double b){return a/b;};
 
-int division(int a, int b) {
-    return a + b;
-}
-int main()
-{
-    std::cout << "aboba\n";
-    map<char, function<int64_t(const int64_t&, const int64_t&)>> operations;
-    operations['+'] = addition;
-    operations['-'] = subtraction;
-    operations['*'] = multiplication;
-    operations['/'] = division;
-
-    string expression;
-    vector<int64_t> stack_;
-    int64_t number = 0;
+    vector<double> stack_;
+    double number = 0;
     bool flag = true;
-
-    getline(cin, expression);
 
     for (const auto& i : expression)
     {
@@ -49,9 +31,9 @@ int main()
         {
             if (i != ' ')
             {
-                int64_t num2 = stack_.back();
+                double num2 = stack_.back();
                 stack_.pop_back();
-                int64_t num1 = stack_.back();
+                double num1 = stack_.back();
                 stack_.pop_back();
 
                 stack_.push_back(operations[i](num1, num2));
@@ -65,7 +47,15 @@ int main()
         }
     }
 
-    cout << stack_.back();
+    return stack_.back();
+}
+
+int main()
+{
+
+
+    string expression = "2 2 3 + *";
+    std::cout << RPNtoNumber(expression);
 
     return 0;
 }

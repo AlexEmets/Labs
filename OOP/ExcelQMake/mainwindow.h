@@ -34,4 +34,6 @@ private:
     std::vector<std::string> data;
 };
 
+
+double RPNtoNumber(std::string expression);
 #endif // MAINWINDOW_H
