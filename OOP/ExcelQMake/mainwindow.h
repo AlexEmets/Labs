@@ -36,4 +36,6 @@ private:
 
 
 double RPNtoNumber(std::string expression);
+
+std::string expressionToRPN(const std::string& a);
 #endif // MAINWINDOW_H

@@ -7,6 +7,7 @@
 #include<cmath>
 #include<map>
 #include<cstdlib>
+#include<stack>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -33,7 +34,9 @@ MainWindow::~MainWindow()
 
 
 int MainWindow::calculateExpression(const QString& cellText) {
-    return RPNtoNumber(cellText.toStdString());
+
+    return RPNtoNumber(expressionToRPN(cellText.toStdString()));
+
 }
 
 
@@ -77,6 +80,55 @@ bool isNumber(const std::string& s) {
     while (it != s.end() && std::isdigit(*it)) ++it;
     return !s.empty() && it == s.end();
 }
+bool isOperator(char b)
+{
+    return b=='+' || b=='-' || b=='*' || b=='/' ;
+}
+bool isPriority(char a, char b) {
+    if(b=='+' || b=='-') return false;
+    return true;
+}
+std::string expressionToRPN(const std::string& a) {
+    std::string res;
+    std::stack<char> s;
+    for(char i : a) {
+        if(i!='(' && i!=')' && !isOperator(i))  {
+            res+=i;
+            res.push_back(' ');
+        }
+
+        if(i=='(') s.push(i) ;
+        if(i==')') {
+            while(s.top()!='(') {
+                res+=s.top();
+                res.push_back(' ');
+                s.pop();
+            }
+            s.pop();
+        }
+        if(isOperator(i)) {
+            if(s.empty() || (!s.empty() && isPriority(s.top(), i)) ) s.push(i);
+            else {
+                while(!s.empty() && !isPriority(s.top(), i)) {
+                    res+=s.top();
+                    res.push_back(' ');
+                    s.pop();
+                }
+                s.push(i) ;
+            }
+        }
+    }
+    while(!s.empty())
+    {
+        res+=s.top();
+        res.push_back(' ');
+        s.pop();
+    }
+    res.pop_back();
+    return res;
+}
+
+
 double RPNtoNumber(std::string expression) {
    std::map<std::string, std::function<double(const double&, const double&)>> operations;
 
@@ -93,6 +145,8 @@ double RPNtoNumber(std::string expression) {
     std::vector<double> stack_;
 
     std::vector<std::string> words = splitString(expression);
+    //std::cout << "Vector:\n";
+   // for(auto it: words) std::cout << it;
     double number = 0;
     bool flag = true;
 
