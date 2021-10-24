@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(183, 205, 238);</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="pushButton">
     <property name="enabled">
@@ -31,6 +34,11 @@
     </property>
     <property name="mouseTracking">
      <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: qlineargradient(spread:repeat, x1:0, y1:0, x2:1, y2:0, stop:0.159204 rgba(108, 161, 194, 255), stop:0.333333 rgba(149, 199, 255, 255), stop:0.432836 rgba(133, 178, 229, 255), stop:0.621891 rgba(133, 139, 229, 255), stop:0.830846 rgba(106, 114, 229, 255), stop:0.940299 rgba(90, 98, 229, 255));
+font: 14pt &quot;Ubuntu Condensed&quot;;
+border-radius: 10px;</string>
     </property>
     <property name="text">
      <string>Інструкція з використання</string>
@@ -64,7 +72,12 @@
      <cursorShape>ArrowCursor</cursorShape>
     </property>
     <property name="mouseTracking">
-     <bool>false</bool>
+     <bool>true</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: qlineargradient(spread:repeat, x1:0, y1:0, x2:1, y2:0, stop:0.159204 rgba(108, 161, 194, 255), stop:0.333333 rgba(149, 199, 255, 255), stop:0.432836 rgba(133, 178, 229, 255), stop:0.621891 rgba(133, 139, 229, 255), stop:0.830846 rgba(106, 114, 229, 255), stop:0.940299 rgba(90, 98, 229, 255));
+font: 17pt &quot;Ubuntu Condensed&quot;;
+border-radius: 10px;</string>
     </property>
     <property name="text">
      <string>Обчислити вираз</string>
