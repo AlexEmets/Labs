@@ -35,10 +35,10 @@ MainWindow::~MainWindow()
 }
 
 
-int MainWindow::calculateExpression(const QString& cellText) {
+double MainWindow::calculateExpression(const QString& cellText) {
     Parser parser;
 
-    return parser.RPNtoNumber(parser.expressionToRPN(cellText.toStdString()));
+    return parser.calculateExpression(cellText.toStdString());
 
 }
 

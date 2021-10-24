@@ -1,40 +1,26 @@
-#ifndef PARSER_H
-#define PARSER_H
-#include<vector>
-#include<string>
+//
+// Created by oyemets on 24.10.21.
+//
+
+#ifndef TESTPARSER_PARSER_H
+#define TESTPARSER_PARSER_H
 #include<stack>
+#include<vector>
 #include<map>
 #include<cmath>
-#include<cstdlib>
-#include<iostream>
-#include <functional>
-class Parser{
-    //после каждой строки стоит " "(для реализации алгоритма RPN)
+#include<algorithm>
+#include<functional>
+using namespace std;
+class Parser {
 public:
+    bool isInteger(const std::string & s);
+    bool isDigit(char a);
+    bool isOperation(const string& s);
+    bool isOperation(char s);
     std::vector<std::string> splitString(const std::string &str);
-    bool isNumber(const std::string& s) {
-        std::string::const_iterator it = s.begin();
-        while (it != s.end() && std::isdigit(*it)) ++it;
-        return !s.empty() && it == s.end();
-    }
-    bool isOperator(char b)
-    {
-        return b=='+' || b=='-' || b=='*' || b=='/' || b=='^';
-    }
-    bool isPriority(char a, char b) {
-        if(a=='(') return true;
-        if(a=='+' || a=='-') return true;
-        if(b=='+' || b=='-') return false;
-        return true;
-    }
-    std::string expressionToRPN(const std::string& a);
-
-
-    double RPNtoNumber(std::string expression);
-
-
+    vector<string> parseExpression(const string& s);
+    double calculateExpression(const string& inputExpression);
+private:
+    map<string, int> priorities = {{"+", 1},{"-", 1},{"*", 2},{"/", 2},{"^", 3} };
 };
-
-
-
-#endif // PARSER_H
+#endif //TESTPARSER_PARSER_H

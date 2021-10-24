@@ -1,111 +1,135 @@
-#include"parser.h"
+//
+// Created by oyemets on 24.10.21.
+//
 
-// example 2+2*(1+1)
+#include "parser.h"
+using namespace std;
+bool Parser::isInteger(const std::string & s)
+{
+    if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false;
 
+    char * p;
+    strtol(s.c_str(), &p, 10);
 
+    return (*p == 0);
+}
 
+bool Parser::isDigit(char a) {
+    string tmp = "0123456789";
+    for(auto it: tmp) if(it == a) return true;
+    return false;
+}
+bool Parser::isOperation(const string& s) {
+    return s == "*" || s == "/" || s == "-" || s == "+" || s == "^";
+}
+bool Parser::isOperation(char s) {
+    return s == '*' || s == '/' || s == '-' || s == '+' || s == '^';
+}
 std::vector<std::string> Parser::splitString(const std::string &str) {
-        std::string word;
-        std::vector<std::string> result;
-        for (auto x : str) {
-            if (x == ' ') {
-                result.push_back(word);
-                result.push_back(" ");
-                word = "";
-            }
-            else word = word + x;
+    std::string word;
+    std::vector<std::string> result;
+    for (auto x : str) {
+        if (x == ' ') {
+            result.push_back(word);
+            result.push_back(" ");
+            word = "";
         }
-        result.push_back(word);
-        return result;
+        else word = word + x;
+    }
+    result.push_back(word);
+    return result;
 }
 
-std::string Parser::expressionToRPN(const std::string& a) {
-    std::string res;
-    std::stack<char> s;
-    for(char i : a) {
-        if(i!='(' && i!=')' && !isOperator(i))  {
-            res+=i;
-            res.push_back(' ');
+vector<string> Parser::parseExpression(const string& s) {
+    vector<string> result;
+
+    string resNumber;
+    for(int i = 0; i < s.size(); ++i) {
+        if(s[i] == ' ' || s[i] == '(' || s[i] == ')' || isOperation(s[i])) {
+            if(!resNumber.empty()) {
+                result.push_back(resNumber);
+                resNumber = "";
+            }
+            string tmp(1, s[i]);
+            result.push_back(tmp);
+
+        }
+        else { //если цифра
+            resNumber+=s[i];
+        }
+    }
+    if(!resNumber.empty()) result.push_back(resNumber);
+    return result;
+}
+//template<class T>
+//void printVector(const vector<T>& vec) {
+//    std::cout << '\n';
+//    for(const auto& itt: vec) std::cout << itt << " ";
+//    std::cout << '\n';
+//}
+map<string, int> priorities = {{"+", 1},{"-", 1},{"*", 2},{"/", 2},{"^", 3} };
+double Parser::calculateExpression(const string& inputExpression) {
+    vector<string> tokens = parseExpression(inputExpression);
+    tokens.emplace_back("X");
+    vector<double> numbersStack;
+    vector<string> operationsStack;
+    map<std::string, std::function<double(const double&, const double&)>> operations;
+    operations["+"] = [](double a, double b) {return a+b;};
+    operations["-"] = [](double a, double b) {return a-b;};
+    operations["*"] = [](double a, double b) {return a*b;};
+    operations["/"] = [](double a, double b) {return a/b;};
+    operations["^"] = [](double a, double b) {return pow(a,b);};
+    for(const auto& it: tokens) {
+        if(isInteger(it)) {
+            numbersStack.push_back(atof(it.c_str()));
         }
 
-        if(i=='(') s.push(i) ;
-        if(i==')') {
-            while(s.top()!='(') {
-                res+=s.top();
-                res.push_back(' ');
-                s.pop();
-            }
-            s.pop();
-        }
-        if(isOperator(i)) {
-            if(s.empty() || (!s.empty() && isPriority(s.top(), i)) ) s.push(i);
-            else {
-                while(!s.empty() && !isPriority(s.top(), i)) {
-                    res+=s.top();
-                    res.push_back(' ');
-                    s.pop();
+        else {
+            if(isOperation(it)) {
+                while(!operationsStack.empty() && priorities[operationsStack.back()] >= priorities[it]) {
+                    if(operationsStack.back() == "(" || operationsStack.back() == ")") break;
+                    double secondOperand = numbersStack.back();
+                    numbersStack.pop_back();
+                    double firstOperand = numbersStack.back();
+                    numbersStack.pop_back();
+                    numbersStack.push_back(operations[operationsStack.back()](firstOperand, secondOperand));
+                    operationsStack.pop_back();
                 }
-                s.push(i) ;
+                operationsStack.push_back(it);
+            }
+            else if(it == "(") operationsStack.push_back(it);
+
+            else if(it == ")") {
+                while(operationsStack.back() != "(") {
+                    double secondOperand = numbersStack.back();
+                    numbersStack.pop_back();
+                    double firstOperand = numbersStack.back();
+                    numbersStack.pop_back();
+                    numbersStack.push_back(operations[operationsStack.back()](firstOperand, secondOperand));
+                    operationsStack.pop_back();
+                }
+                operationsStack.pop_back();
+            }
+            else if(it == "X") {
+                //printVector(operationsStack);
+                //printVector(numbersStack);
+                //проверка на правильность арифметического выражения
+                if(numbersStack.size() - operationsStack.size() == 1) { // должно быть так(наверное)
+                    while(!operationsStack.empty()) {
+                        double secondOperand = numbersStack.back();
+                        numbersStack.pop_back();
+                        double firstOperand = numbersStack.back();
+                        numbersStack.pop_back();
+                        numbersStack.push_back(operations[operationsStack.back()](firstOperand, secondOperand));
+                        operationsStack.pop_back();
+                    }
+                    return numbersStack.back();
+                }
+                else {
+                    return -10000;
+                }
             }
         }
     }
-    while(!s.empty())
-    {
-        res+=s.top();
-        res.push_back(' ');
-        s.pop();
-    }
-    res.pop_back();
-    return res;
-}
-
-double Parser:: RPNtoNumber(std::string expression) {
-   std::map<std::string, std::function<double(const double&, const double&)>> operations;
-
-    operations["+"] = [](double a, double b){return a+b;};
-    operations["-"] = [](double a, double b){return a-b;};
-    operations["*"] = [](double a, double b){return a*b;};
-    operations["/"] = [](double a, double b){return a/b;};
-    operations["mod"] = [](double a, double b){return (int)a%(int)b;};
-    operations["div"] = [](double a, double b){return (int)a/(int)b;};
-    operations["^"] = [](double a, double b){return pow(a,b);};
-    operations["min"] = [](double a, double b){return std::min(a,b);};
-    operations["max"] = [](double a, double b){return std::max(a,b);};
-
-    std::vector<double> stack_;
-
-    std::vector<std::string> words = splitString(expression);
-    //std::cout << "Vector:\n";
-   // for(auto it: words) std::cout << it;
-    double number = 0;
-    bool flag = true;
-
-    for (const auto& i : words)
-    {
-        if (isNumber(i))
-        {
-            number = std::atof(i.c_str());
-            flag = true;
-        }
-        else
-        {
-            if (i != " ")
-            {
-                double num2 = stack_.back();
-                stack_.pop_back();
-                double num1 = stack_.back();
-                stack_.pop_back();
-
-                stack_.push_back(operations[i](num1, num2));
-                flag = false;
-            }
-            else if (i == " " && flag)
-            {
-                stack_.push_back(number);
-                number = 0;
-            }
-        }
-    }
-
-    return stack_.back();
+    return numbersStack.back();
 }

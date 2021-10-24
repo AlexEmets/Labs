@@ -1,6 +1,7 @@
 build/
 cmake-build-debug/
 .vscode/
+projectTests
 .idea/
 *.csproj
 Properties
@@ -9,6 +10,7 @@ libproject.a
 project.cbp
 Makefile
 *.sln
+OOP/ExcelQMake/UnitTests/projectTests
 OOP/ExcelQMake/Makefile
 OOP/ExcelQMake/UnitTests/Makefile
 CMakeCache.txt

@@ -20,7 +20,7 @@ public:
     int getDataSize() const {
         return data.size();
     }
-    int calculateExpression(const QString& cellText);
+    double calculateExpression(const QString& cellText);
 private slots:
     void on_pushButton_2_clicked();
 
