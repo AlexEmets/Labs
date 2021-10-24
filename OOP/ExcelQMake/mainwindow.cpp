@@ -8,6 +8,7 @@
 #include<map>
 #include<cstdlib>
 #include<stack>
+
 #include"parser.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),

@@ -1,17 +1,31 @@
-#include "gtest/gtest.h"
+#include"gtest/gtest.h"
 #include"../parser.h"
-TEST(sample_test_case4, sample_test)
-{
+TEST(test1, aboba) {
+
     Parser parser;
+    std::string testedExpression = "(3+3)^(8-5*(1+4-2*2))";
+    int expectedResult = 216;
+    int resultOfParserClass = parser.RPNtoNumber(parser.expressionToRPN(testedExpression));
+    EXPECT_EQ(resultOfParserClass, expectedResult);
 
-    std::string inputExpression = "2+2*2";
-    int expectedResult = 6;
-
-    double resultFromParserClass = parser.RPNtoNumber(parser.expressionToRPN(inputExpression));
-    EXPECT_EQ(1, 1);
 }
 
-int main() {
-    testing::InitGoogleTest();
-    RUN_ALL_TESTS();
+TEST(test2, aboba) {
+
+    Parser parser;
+    std::string testedExpression = "2+2*2";
+    int expectedResult = 6;
+    int resultOfParserClass = parser.RPNtoNumber(parser.expressionToRPN(testedExpression));
+    EXPECT_EQ(resultOfParserClass, expectedResult);
+
+}
+
+TEST(test3, aboba) {
+
+    Parser parser;
+    std::string testedExpression = "2+2*2";
+    int expectedResult = 6;
+    int resultOfParserClass = parser.RPNtoNumber(parser.expressionToRPN(testedExpression));
+    EXPECT_EQ(resultOfParserClass, expectedResult);
+
 }
